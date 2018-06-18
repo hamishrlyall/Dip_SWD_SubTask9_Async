@@ -2,32 +2,38 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
-namespace Dip_SWD_SubTask9_Async_ConsoleApp
+namespace Dip_SWD_SubTask9_Async_ConsoleApp_MultiThreaded
 {
       class Program
       {
-            public static void Main(string[] args)
+            static void Main(string[] args)
             {
-                  Console.WriteLine(DateTime.Now);
-                  var task1 = FindPrimesAsync(250000);
-                  Console.WriteLine(DateTime.Now);
-                  var task2 = FindPrimesAsync(400000);
-                  Console.WriteLine(DateTime.Now);
+                  Console.WriteLine("Before we start thread");
 
-                  Console.WriteLine(task1.Result);
-                  Console.WriteLine(task2.Result);
+                  Thread tid1 = new Thread(new ThreadStart(MyThread.Thread1));
+                  Thread tid2 = new Thread(new ThreadStart(MyThread.Thread2));
+
+                  Console.WriteLine(DateTime.Now);
+                  tid1.Start();
+                  Console.WriteLine(DateTime.Now);
+                  tid2.Start();
+                  Console.WriteLine(DateTime.Now);
 
                   Console.ReadKey();
-
             }
-            public static async Task<long> FindPrimesAsync(int n)
+            public class MyThread
             {
-                  var x = await Task.Run(() => CalculateNthPrimeNumber(n));
-                  return x;
+                  public static void Thread1()
+                  {
+                        Console.WriteLine("Thread1 {0}", CalculateNthPrimeNumber(400000));
+                  }
+                  public static void Thread2()
+                  {
+                        Console.WriteLine("Thread2 {0}", CalculateNthPrimeNumber(250000));
+                  }
             }
-
             public static long CalculateNthPrimeNumber(int n)
             {
                   int count = 0;
